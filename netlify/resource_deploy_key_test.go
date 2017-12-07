@@ -8,8 +8,6 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-const testRepo string = "test-repo"
-
 func TestAccDeployKey_basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },

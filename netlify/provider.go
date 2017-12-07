@@ -27,6 +27,7 @@ func Provider() terraform.ResourceProvider {
 
 		ResourcesMap: map[string]*schema.Resource{
 			"netlify_deploy_key": resourceDeployKey(),
+			"netlify_site":       resourceSite(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{},
