@@ -5,6 +5,7 @@ This is a [Terraform](https://www.terraform.io) provider for Netlify.
 ## Supported Resources
 
   * `netlify_deploy_key`
+  * `netlify_site`
 
 ## Developing the Provider
 
