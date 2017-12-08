@@ -1,8 +1,6 @@
 package netlify
 
 import (
-	"strings"
-
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/netlify/open-api/go/models"
 	"github.com/netlify/open-api/go/plumbing/operations"
@@ -119,21 +117,10 @@ func resourceSiteUpdate(d *schema.ResourceData, metaRaw interface{}) error {
 	return nil
 }
 
-func resourceSiteDelete(d *schema.ResourceData, metaRaw interface{}) (err error) {
-	// Workaround for https://github.com/netlify/open-api/issues/53
-	defer func() {
-		if r := recover(); r != nil {
-			if strings.Contains(r.(error).Error(), "DeleteSiteOK") {
-				return
-			}
-
-			panic(r)
-		}
-	}()
-
+func resourceSiteDelete(d *schema.ResourceData, metaRaw interface{}) error {
 	meta := metaRaw.(*Meta)
 	params := operations.NewDeleteSiteParams()
 	params.SiteID = d.Id()
-	_, err = meta.Netlify.Operations.DeleteSite(params, meta.AuthInfo)
-	return
+	_, err := meta.Netlify.Operations.DeleteSite(params, meta.AuthInfo)
+	return err
 }
