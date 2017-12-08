@@ -14,14 +14,43 @@ func TestAccSite_basic(t *testing.T) {
 	var site models.Site
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSiteDestroy,
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: testAccSiteConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSiteExists("netlify_site.test", &site),
 				),
+			},
+		},
+	})
+}
+
+func TestAccSite_disappears(t *testing.T) {
+	var site models.Site
+
+	destroy := func(*terraform.State) error {
+		meta := testAccProvider.Meta().(*Meta)
+		params := operations.NewDeleteSiteParams()
+		params.SiteID = site.ID
+		_, err := meta.Netlify.Operations.DeleteSite(params, meta.AuthInfo)
+		return err
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSiteDestroy,
+		Steps: []resource.TestStep{
+			resource.TestStep{
+				Config: testAccSiteConfig,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					testAccCheckSiteExists("netlify_site.test", &site),
+					destroy,
+				),
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
@@ -49,6 +78,32 @@ func testAccCheckSiteExists(n string, site *models.Site) resource.TestCheckFunc 
 		*site = *resp.Payload
 		return nil
 	}
+}
+
+func testAccCheckSiteDestroy(s *terraform.State) error {
+	for _, rs := range s.RootModule().Resources {
+		if rs.Type != "netlify_site" {
+			continue
+		}
+
+		meta := testAccProvider.Meta().(*Meta)
+		params := operations.NewGetSiteParams()
+		params.SiteID = rs.Primary.ID
+		resp, err := meta.Netlify.Operations.GetSite(params, meta.AuthInfo)
+		if err == nil && resp.Payload != nil {
+			return fmt.Errorf("Site still exists: %s", rs.Primary.ID)
+		}
+
+		if err != nil {
+			if v, ok := err.(*operations.GetSiteDefault); ok && v.Code() == 404 {
+				return nil
+			}
+		}
+
+		return err
+	}
+
+	return nil
 }
 
 var testAccSiteConfig = `

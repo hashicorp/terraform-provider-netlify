@@ -100,6 +100,12 @@ func resourceSiteRead(d *schema.ResourceData, metaRaw interface{}) error {
 	params.SiteID = d.Id()
 	resp, err := meta.Netlify.Operations.GetSite(params, meta.AuthInfo)
 	if err != nil {
+		// If it is a 404 it was removed remotely
+		if v, ok := err.(*operations.GetSiteDefault); ok && v.Code() == 404 {
+			d.SetId("")
+			return nil
+		}
+
 		return err
 	}
 
