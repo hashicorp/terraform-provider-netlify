@@ -12,18 +12,28 @@ import (
 
 func TestAccSite_basic(t *testing.T) {
 	var site models.Site
+	resourceName := "netlify_site.test"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckSiteDestroy,
+		//IDRefreshName: resourceName,
 		Steps: []resource.TestStep{
 			resource.TestStep{
 				Config: testAccSiteConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckSiteExists("netlify_site.test", &site),
+					testAccCheckSiteExists(resourceName, &site),
 				),
 			},
+
+			/*
+				resource.TestStep{
+					ResourceName:      resourceName,
+					ImportState:       true,
+					ImportStateVerify: true,
+				},
+			*/
 		},
 	})
 }

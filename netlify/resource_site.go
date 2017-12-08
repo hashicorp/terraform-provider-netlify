@@ -1,6 +1,8 @@
 package netlify
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/netlify/open-api/go/models"
 	"github.com/netlify/open-api/go/plumbing/operations"
@@ -12,11 +14,24 @@ func resourceSite() *schema.Resource {
 		Read:   resourceSiteRead,
 		Update: resourceSiteUpdate,
 		Delete: resourceSiteDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
+			},
+
+			"custom_domain": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+
+			"deploy_url": &schema.Schema{
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 
@@ -33,17 +48,17 @@ func resourceSite() *schema.Resource {
 
 						"command": &schema.Schema{
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 
 						"deploy_key_id": &schema.Schema{
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 
 						"dir": &schema.Schema{
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 
 						"provider": &schema.Schema{
@@ -66,7 +81,12 @@ func resourceSiteCreate(d *schema.ResourceData, metaRaw interface{}) error {
 	meta := metaRaw.(*Meta)
 
 	params := operations.NewCreateSiteParams()
-	params.Site = &models.SiteSetup{}
+	params.Site = &models.SiteSetup{
+		Site: models.Site{
+			Name:         d.Get("name").(string),
+			CustomDomain: d.Get("custom_domain").(string),
+		},
+	}
 
 	// If we have a repo config, then configure that
 	if v, ok := d.GetOk("repo"); ok {
@@ -89,7 +109,7 @@ func resourceSiteCreate(d *schema.ResourceData, metaRaw interface{}) error {
 	}
 
 	d.SetId(resp.Payload.ID)
-	return nil
+	return resourceSiteRead(d, metaRaw)
 }
 
 func resourceSiteRead(d *schema.ResourceData, metaRaw interface{}) error {
@@ -108,7 +128,11 @@ func resourceSiteRead(d *schema.ResourceData, metaRaw interface{}) error {
 	}
 
 	site := resp.Payload
+	fmt.Println("foo")
+	fmt.Printf("PAYLOAD: %#v", site)
 	d.Set("name", site.Name)
+	d.Set("custom_domain", site.CustomDomain)
+	d.Set("deploy_url", site.DeployURL)
 
 	return nil
 }
