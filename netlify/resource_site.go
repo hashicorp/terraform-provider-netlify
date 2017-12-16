@@ -81,27 +81,7 @@ func resourceSiteCreate(d *schema.ResourceData, metaRaw interface{}) error {
 	meta := metaRaw.(*Meta)
 
 	params := operations.NewCreateSiteParams()
-	params.Site = &models.SiteSetup{
-		Site: models.Site{
-			Name:         d.Get("name").(string),
-			CustomDomain: d.Get("custom_domain").(string),
-		},
-	}
-
-	// If we have a repo config, then configure that
-	if v, ok := d.GetOk("repo"); ok {
-		vL := v.([]interface{})
-		repo := vL[0].(map[string]interface{})
-
-		params.Site.Repo = &models.RepoSetup{
-			Branch:      repo["branch"].(string),
-			Cmd:         repo["command"].(string),
-			DeployKeyID: repo["deploy_key_id"].(string),
-			Dir:         repo["dir"].(string),
-			Provider:    repo["provider"].(string),
-			Repo:        repo["repo"].(string),
-		}
-	}
+	params.Site = resourceSite_setupStruct(d)
 
 	resp, err := meta.Netlify.Operations.CreateSite(params, meta.AuthInfo)
 	if err != nil {
@@ -128,8 +108,7 @@ func resourceSiteRead(d *schema.ResourceData, metaRaw interface{}) error {
 	}
 
 	site := resp.Payload
-	fmt.Println("foo")
-	fmt.Printf("PAYLOAD: %#v", site)
+	// For debugging: fmt.Printf("PAYLOAD: %#v", site)
 	d.Set("name", site.Name)
 	d.Set("custom_domain", site.CustomDomain)
 	d.Set("deploy_url", site.DeployURL)
@@ -138,7 +117,17 @@ func resourceSiteRead(d *schema.ResourceData, metaRaw interface{}) error {
 }
 
 func resourceSiteUpdate(d *schema.ResourceData, metaRaw interface{}) error {
-	return nil
+	params := operations.NewUpdateSiteParams()
+	params.Site = resourceSite_setupStruct(d)
+	params.SiteID = d.Id()
+
+	meta := metaRaw.(*Meta)
+	_, err := meta.Netlify.Operations.UpdateSite(params, meta.AuthInfo)
+	if err != nil {
+		return err
+	}
+
+	return resourceSiteRead(d, metaRaw)
 }
 
 func resourceSiteDelete(d *schema.ResourceData, metaRaw interface{}) error {
@@ -147,4 +136,31 @@ func resourceSiteDelete(d *schema.ResourceData, metaRaw interface{}) error {
 	params.SiteID = d.Id()
 	_, err := meta.Netlify.Operations.DeleteSite(params, meta.AuthInfo)
 	return err
+}
+
+// Returns the SiteSetup structure that can be used for creation or updating.
+func resourceSite_setupStruct(d *schema.ResourceData) *models.SiteSetup {
+	result := &models.SiteSetup{
+		Site: models.Site{
+			Name:         d.Get("name").(string),
+			CustomDomain: d.Get("custom_domain").(string),
+		},
+	}
+
+	// If we have a repo config, then configure that
+	if v, ok := d.GetOk("repo"); ok {
+		vL := v.([]interface{})
+		repo := vL[0].(map[string]interface{})
+
+		result.Repo = &models.RepoSetup{
+			Branch:      repo["branch"].(string),
+			Cmd:         repo["command"].(string),
+			DeployKeyID: repo["deploy_key_id"].(string),
+			Dir:         repo["dir"].(string),
+			Provider:    repo["provider"].(string),
+			Repo:        repo["repo"].(string),
+		}
+	}
+
+	return result
 }

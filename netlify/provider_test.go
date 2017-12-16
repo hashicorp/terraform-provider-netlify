@@ -1,9 +1,11 @@
 package netlify
 
 import (
+	"errors"
 	"os"
 	"testing"
 
+	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
 )
@@ -31,5 +33,15 @@ func TestProvider_impl(t *testing.T) {
 func testAccPreCheck(t *testing.T) {
 	if v := os.Getenv("NETLIFY_TOKEN"); v == "" {
 		t.Fatal("NETLIFY_TOKEN must be set for acceptance tests")
+	}
+}
+
+func testAccAssert(msg string, f func() bool) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		if f() {
+			return nil
+		}
+
+		return errors.New("assertion failed: " + msg)
 	}
 }

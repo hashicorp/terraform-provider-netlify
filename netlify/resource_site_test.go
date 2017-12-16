@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform/helper/acctest"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/netlify/open-api/go/models"
@@ -66,6 +67,40 @@ func TestAccSite_disappears(t *testing.T) {
 	})
 }
 
+func TestAccSite_updateName(t *testing.T) {
+	var site models.Site
+	resourceName := "netlify_site.test"
+	siteName := fmt.Sprintf("test-%s", acctest.RandStringFromCharSet(
+		5, acctest.CharSetAlphaNum))
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSiteDestroy,
+		Steps: []resource.TestStep{
+			resource.TestStep{
+				Config: testAccSiteConfig,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSiteExists(resourceName, &site),
+					testAccAssert("has random name", func() bool {
+						return site.Name != "" && site.Name != "tubes"
+					}),
+				),
+			},
+
+			resource.TestStep{
+				Config: fmt.Sprintf(testAccSiteConfig_updateName, siteName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSiteExists(resourceName, &site),
+					testAccAssert("has configured name", func() bool {
+						return site.Name == siteName
+					}),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckSiteExists(n string, site *models.Site) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -118,4 +153,10 @@ func testAccCheckSiteDestroy(s *terraform.State) error {
 
 var testAccSiteConfig = `
 resource "netlify_site" "test" {}
+`
+
+var testAccSiteConfig_updateName = `
+resource "netlify_site" "test" {
+	name = "%s"
+}
 `
