@@ -61,7 +61,26 @@ func resourceHookCreate(d *schema.ResourceData, metaRaw interface{}) error {
 }
 
 func resourceHookRead(d *schema.ResourceData, metaRaw interface{}) error {
-	// Not implemented yet
+	meta := metaRaw.(*Meta)
+	params := operations.NewGetHookParams()
+	params.HookID = d.Id()
+	resp, err := meta.Netlify.Operations.GetHook(params, meta.AuthInfo)
+	if err != nil {
+		// If it is a 404 it was removed remotely
+		if v, ok := err.(*operations.GetHookDefault); ok && v.Code() == 404 {
+			d.SetId("")
+			return nil
+		}
+
+		return err
+	}
+
+	hook := resp.Payload
+	d.Set("site_id", hook.SiteID)
+	d.Set("type", hook.Type)
+	d.Set("event", hook.Event)
+	d.Set("data", hook.Data)
+
 	return nil
 }
 
