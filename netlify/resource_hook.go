@@ -41,16 +41,11 @@ func resourceHook() *schema.Resource {
 }
 
 func resourceHookCreate(d *schema.ResourceData, metaRaw interface{}) error {
-	meta := metaRaw.(*Meta)
-
 	params := operations.NewCreateHookBySiteIDParams()
 	params.SiteID = d.Get("site_id").(string)
-	params.Hook = &models.Hook{
-		Data:  d.Get("data").(map[string]interface{}),
-		Event: d.Get("event").(string),
-		Type:  d.Get("type").(string),
-	}
+	params.Hook = resourceHook_struct(d)
 
+	meta := metaRaw.(*Meta)
 	resp, err := meta.Netlify.Operations.CreateHookBySiteID(params, meta.AuthInfo)
 	if err != nil {
 		return err
@@ -85,8 +80,17 @@ func resourceHookRead(d *schema.ResourceData, metaRaw interface{}) error {
 }
 
 func resourceHookUpdate(d *schema.ResourceData, metaRaw interface{}) error {
-	// Not implemented yet
-	return nil
+	params := operations.NewUpdateHookParams()
+	params.HookID = d.Id()
+	params.Hook = resourceHook_struct(d)
+
+	meta := metaRaw.(*Meta)
+	_, err := meta.Netlify.Operations.UpdateHook(params, meta.AuthInfo)
+	if err != nil {
+		return err
+	}
+
+	return resourceHookRead(d, metaRaw)
 }
 
 func resourceHookDelete(d *schema.ResourceData, metaRaw interface{}) error {
@@ -95,4 +99,13 @@ func resourceHookDelete(d *schema.ResourceData, metaRaw interface{}) error {
 	params.HookID = d.Id()
 	_, err := meta.Netlify.Operations.DeleteHookBySiteID(params, meta.AuthInfo)
 	return err
+}
+
+// Returns the Hook structure that can be used for creation or updating.
+func resourceHook_struct(d *schema.ResourceData) *models.Hook {
+	return &models.Hook{
+		Data:  d.Get("data").(map[string]interface{}),
+		Event: d.Get("event").(string),
+		Type:  d.Get("type").(string),
+	}
 }
