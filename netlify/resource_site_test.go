@@ -16,25 +16,23 @@ func TestAccSite_basic(t *testing.T) {
 	resourceName := "netlify_site.test"
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckSiteDestroy,
-		//IDRefreshName: resourceName,
+		PreCheck:      func() { testAccPreCheck(t) },
+		Providers:     testAccProviders,
+		CheckDestroy:  testAccCheckSiteDestroy,
+		IDRefreshName: resourceName,
 		Steps: []resource.TestStep{
 			resource.TestStep{
-				Config: testAccSiteConfig,
+				Config: testAccSiteConfig_repo,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSiteExists(resourceName, &site),
 				),
 			},
 
-			/*
-				resource.TestStep{
-					ResourceName:      resourceName,
-					ImportState:       true,
-					ImportStateVerify: true,
-				},
-			*/
+			resource.TestStep{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
 		},
 	})
 }
@@ -153,6 +151,16 @@ func testAccCheckSiteDestroy(s *terraform.State) error {
 
 var testAccSiteConfig = `
 resource "netlify_site" "test" {}
+`
+
+var testAccSiteConfig_repo = `
+resource "netlify_site" "test" {
+	repo {
+		provider = "github"
+		repo = "mitchellh/fogli"
+		repo_branch = "master"
+	}
+}
 `
 
 var testAccSiteConfig_updateName = `

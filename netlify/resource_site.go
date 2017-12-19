@@ -1,7 +1,7 @@
 package netlify
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/netlify/open-api/go/models"
@@ -41,11 +41,6 @@ func resourceSite() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"branch": &schema.Schema{
-							Type:     schema.TypeString,
-							Required: true,
-						},
-
 						"command": &schema.Schema{
 							Type:     schema.TypeString,
 							Optional: true,
@@ -67,6 +62,11 @@ func resourceSite() *schema.Resource {
 						},
 
 						"repo": &schema.Schema{
+							Type:     schema.TypeString,
+							Required: true,
+						},
+
+						"repo_branch": &schema.Schema{
 							Type:     schema.TypeString,
 							Required: true,
 						},
@@ -108,10 +108,32 @@ func resourceSiteRead(d *schema.ResourceData, metaRaw interface{}) error {
 	}
 
 	site := resp.Payload
-	// For debugging: fmt.Printf("PAYLOAD: %#v", site)
 	d.Set("name", site.Name)
 	d.Set("custom_domain", site.CustomDomain)
 	d.Set("deploy_url", site.DeployURL)
+	d.Set("repo", nil)
+
+	if site.BuildSettings != nil {
+		// https://github.com/netlify/open-api/issues/64
+		var repo string
+		if site.BuildSettings.RepoURL != "" {
+			const prefix = "https://github.com/"
+			if strings.HasPrefix(site.BuildSettings.RepoURL, prefix) {
+				repo = strings.TrimPrefix(site.BuildSettings.RepoURL, prefix)
+			}
+		}
+
+		d.Set("repo", []interface{}{
+			map[string]interface{}{
+				"command":       site.BuildSettings.Cmd,
+				"deploy_key_id": site.BuildSettings.DeployKeyID,
+				"dir":           site.BuildSettings.Dir,
+				"provider":      site.BuildSettings.Provider,
+				"repo":          repo,
+				"repo_branch":   site.BuildSettings.RepoBranch,
+			},
+		})
+	}
 
 	return nil
 }
@@ -152,13 +174,13 @@ func resourceSite_setupStruct(d *schema.ResourceData) *models.SiteSetup {
 		vL := v.([]interface{})
 		repo := vL[0].(map[string]interface{})
 
-		result.Repo = &models.RepoSetup{
-			Branch:      repo["branch"].(string),
+		result.Repo = &models.RepoInfo{
 			Cmd:         repo["command"].(string),
 			DeployKeyID: repo["deploy_key_id"].(string),
 			Dir:         repo["dir"].(string),
 			Provider:    repo["provider"].(string),
 			Repo:        repo["repo"].(string),
+			RepoBranch:  repo["repo_branch"].(string),
 		}
 	}
 
