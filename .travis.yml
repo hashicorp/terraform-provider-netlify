@@ -3,6 +3,7 @@ sudo: false
 language: go
 go:
 - 1.x
+- tip
 
 install:
 # This script is used by the Travis build to install a cookie for
