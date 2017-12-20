@@ -1,8 +1,6 @@
 package netlify
 
 import (
-	"strings"
-
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/netlify/open-api/go/models"
 	"github.com/netlify/open-api/go/plumbing/operations"
@@ -61,7 +59,7 @@ func resourceSite() *schema.Resource {
 							Required: true,
 						},
 
-						"repo": &schema.Schema{
+						"repo_path": &schema.Schema{
 							Type:     schema.TypeString,
 							Required: true,
 						},
@@ -114,22 +112,13 @@ func resourceSiteRead(d *schema.ResourceData, metaRaw interface{}) error {
 	d.Set("repo", nil)
 
 	if site.BuildSettings != nil {
-		// https://github.com/netlify/open-api/issues/64
-		var repo string
-		if site.BuildSettings.RepoURL != "" {
-			const prefix = "https://github.com/"
-			if strings.HasPrefix(site.BuildSettings.RepoURL, prefix) {
-				repo = strings.TrimPrefix(site.BuildSettings.RepoURL, prefix)
-			}
-		}
-
 		d.Set("repo", []interface{}{
 			map[string]interface{}{
 				"command":       site.BuildSettings.Cmd,
 				"deploy_key_id": site.BuildSettings.DeployKeyID,
 				"dir":           site.BuildSettings.Dir,
 				"provider":      site.BuildSettings.Provider,
-				"repo":          repo,
+				"repo_path":     site.BuildSettings.RepoPath,
 				"repo_branch":   site.BuildSettings.RepoBranch,
 			},
 		})
@@ -179,7 +168,7 @@ func resourceSite_setupStruct(d *schema.ResourceData) *models.SiteSetup {
 			DeployKeyID: repo["deploy_key_id"].(string),
 			Dir:         repo["dir"].(string),
 			Provider:    repo["provider"].(string),
-			Repo:        repo["repo"].(string),
+			RepoPath:    repo["repo_path"].(string),
 			RepoBranch:  repo["repo_branch"].(string),
 		}
 	}

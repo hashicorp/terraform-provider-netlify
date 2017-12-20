@@ -157,7 +157,7 @@ var testAccSiteConfig_repo = `
 resource "netlify_site" "test" {
 	repo {
 		provider = "github"
-		repo = "mitchellh/fogli"
+		repo_path = "mitchellh/fogli"
 		repo_branch = "master"
 	}
 }
