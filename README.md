@@ -4,6 +4,7 @@ This is a [Terraform](https://www.terraform.io) provider for Netlify.
 
 ## Supported Resources
 
+  * `netlify_build_hook`
   * `netlify_deploy_key`
   * `netlify_hook`
   * `netlify_site`
