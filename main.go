@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/hashicorp/terraform/plugin"
-	"github.com/mitchellh/terraform-provider-netlify/netlify"
+	"github.com/terraform-providers/terraform-provider-netlify/netlify"
 )
 
 func main() {
