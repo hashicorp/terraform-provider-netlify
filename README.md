@@ -34,7 +34,61 @@ $ gnumake build
 
 Using the provider
 ----------------------
-## Fill in for each provider
+
+> *NOTE*: This provider is best used when paired with a VCS system provider such as the [Github provider](https://www.terraform.io/docs/providers/github/index.html), which will be used for reference in these examples, since Netlify integrates directly with your VCS system in order to continuously deploy your website.
+
+Using this provider requires an auth token from Netlify. You can generate a token here: https://app.netlify.com/account/applications. You will also likely need an auth token for your VCS system. In this example, we'll use Github, so you'll want to get a Github token as well. We'll start by configuring Github. In this example, we'll assume that we're using a repo at `github.com/username/repo`.
+
+```js
+// configure the github provider
+provider "github" {
+  organization = "<username>"
+}
+
+// Configure the repository with the dynamically created Netlify key.
+resource "github_repository_deploy_key" "key" {
+  title      = "Netlify"
+  repository = "<repo>"
+  key        = "${netlify_deploy_key.key.public_key}"
+  read_only  = false
+}
+
+// Create a webhook that triggers Netlify builds on push.
+resource "github_repository_webhook" "main" {
+  repository = "<repo>"
+  name       = "web"
+  events     = ["delete", "push", "pull_request"]
+
+  configuration {
+    content_type = "json"
+    url          = "https://api.netlify.com/hooks/github"
+  }
+
+  depends_on = ["netlify_site.main"]
+}
+```
+
+This pairs closely with the Netlify provider instructions as you can see, example shown below:
+
+```js
+// A new, unique deploy key for this specific website
+resource "netlify_deploy_key" "key" {}
+
+resource "netlify_site" "main" {
+  name = "<name of netlify site>"
+
+  repo {
+    repo_branch = "<github branch to deploy>"
+    command = "<command used to build your website>"
+    deploy_key_id = "${netlify_deploy_key.key.id}"
+    dir = "<directory your website is built into, relative to root>"
+    provider = "github"
+    repo_path = "<username/repo>"
+  }
+}
+```
+
+With all the details filled in here, you should be able to run the script and have your site deploy. Of course, it's likely that you will want to configure some of these values as variables, and you can use `GITHUB_TOKEN` and `NETLIFY_TOKEN` environment variables as well to represent these API keys.
 
 Developing the Provider
 ---------------------------
