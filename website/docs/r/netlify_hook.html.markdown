@@ -8,17 +8,16 @@ description: |-
 
 # netlify_hook
 
-[DESCRIPTION]
+An [outgoing webhook](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications), typically used to netlify a third party service about deploys.
 
 ## Example Usage
 
 ```hcl
-resource "netlify_hook" "bar" {
-  site_id =
-  type =
-  event =
-  data =
-
+resource "netlify_hook" "email_on_deploy" {
+  site_id = "12345"
+  type = "email"
+  event = "deploy_created"
+  data = { email: "test@test.com" }
 }
 ```
 
@@ -26,7 +25,7 @@ resource "netlify_hook" "bar" {
 
 The following arguments are supported:
 
-* `site_id` - (Required) [add description]
-* `type` - (Required) [add description]
-* `event` - (Required) [add description]
-* `data` - (Required) [add description]
+* `site_id` - (Required) - id of the site on netlify
+* `type` - (Required) - type of outgoing webhook, for example slack, email, github commit status, etc
+* `event` - (Required) - when to send the data, for example on deploy create, succeed, fail, etc
+* `data` - (Required) object/hash of data to be sent along with the webhook. this varies depending on the `type`

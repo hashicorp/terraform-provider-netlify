@@ -8,13 +8,19 @@ description: |-
 
 # netlify_deploy_key
 
-[DESCRIPTION]
+Creates a new netlify deploy key, typically used by the `netlify_site` resource.
 
 ## Example Usage
 
 ```hcl
-resource "netlify_deploy_key" "bar" {
+resource "netlify_deploy_key" "key" {}
 
+resource "netlify_site" "main" {
+  // ...
+  repo {
+    // ...
+    deploy_key_id = "${netlify_deploy_key.key.id}"
+  }
 }
 ```
 
