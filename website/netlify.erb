@@ -1,0 +1,35 @@
+<% wrap_layout :inner do %>
+  <% content_for :sidebar do %>
+    <div class="docs-sidebar hidden-print affix-top" role="complementary">
+      <ul class="nav docs-sidenav">
+        <li<%= sidebar_current("docs-home") %>>
+          <a href="/docs/providers/index.html">All Providers</a>
+        </li>
+
+        <li<%= sidebar_current("docs-netlify-index") %>>
+          <a href="/docs/providers/netlify/index.html">Template Provider</a>
+        </li>
+
+        <li<%= sidebar_current("docs-netlify-resource") %>>
+          <a href="#">Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-netlify-resource-build-hook") %>>
+              <a href="/docs/providers/netlify/r/buld_hook.html">netlify_build_hook</a>
+            </li>
+            <li<%= sidebar_current("docs-netlify-resource-deploy-key") %>>
+              <a href="/docs/providers/netlify/r/deploy_key.html">netlify_deploy_key</a>
+            </li>
+            <li<%= sidebar_current("docs-netlify-resource-hook") %>>
+              <a href="/docs/providers/netlify/r/hook.html">netlify_hook</a>
+            </li>
+            <li<%= sidebar_current("docs-netlify-resource-site") %>>
+              <a href="/docs/providers/netlify/r/site.html">netlify_site</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= yield %>
+<% end %>
