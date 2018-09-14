@@ -19,8 +19,8 @@ the branch to be built when the hook is triggered.
 ```hcl
 resource "netlify_build_hook" "trigger" {
   site_id = "12345"
-  branch = "master"
-  title = "Manual Build Trigger"
+  branch  = "master"
+  title   = "Manual Build Trigger"
 }
 ```
 
