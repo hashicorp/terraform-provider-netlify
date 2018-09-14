@@ -15,9 +15,12 @@ An [outgoing webhook](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-a
 ```hcl
 resource "netlify_hook" "email_on_deploy" {
   site_id = "12345"
-  type = "email"
-  event = "deploy_created"
-  data = { email: "test@test.com" }
+  type    = "email"
+  event   = "deploy_created"
+
+  data {
+    email = "test@test.com"
+  }
 }
 ```
 
