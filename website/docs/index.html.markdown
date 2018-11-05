@@ -8,14 +8,16 @@ description: |-
 
 # Netlify Provider
 
-Allows you to provision and deploy netlify sites and manage webhooks.
+The Netlify provider allows you to provision and deploy netlify sites and manage webhooks. The provider needs to be configured with the proper credentials before it can be used.
+
+Use the navigation to the left to read about the available resources.
 
 ## Example Usage
 
 ```hcl
 # Configure the Netlify Provider
 provider "netlify" {
-  token        = "${var.netlify_token}"
+  token    = "${var.netlify_token}"
   base_url = "${var.netlify_base_url}"
 }
 
@@ -27,12 +29,12 @@ resource "netlify_site" "main" {
   name = "my-site"
 
   repo {
-    repo_branch = "master"
-    command = "middleman build"
+    repo_branch   = "master"
+    command       = "middleman build"
     deploy_key_id = "${netlify_deploy_key.key.id}"
-    dir = "build"
-    provider = "github"
-    repo_path = "username/reponame"
+    dir           = "build"
+    provider      = "github"
+    repo_path     = "username/reponame"
   }
 }
 ```
