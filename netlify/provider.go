@@ -45,7 +45,7 @@ var descriptions map[string]string
 
 func init() {
 	descriptions = map[string]string{
-		"token":    "The OAuth token used to connect to GitHub.",
+		"token":    "The OAuth token used to connect to Netlify.",
 		"base_url": "The Netlify Base API URL",
 	}
 }
