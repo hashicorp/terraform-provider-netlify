@@ -20,14 +20,14 @@ func TestAccHook(t *testing.T) {
 		CheckDestroy:  testAccCheckHookDestroy,
 		IDRefreshName: resourceName,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccHookConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHookExists(resourceName, &hook),
 				),
 			},
 
-			resource.TestStep{
+			{
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -53,7 +53,7 @@ func TestAccHook_disappears(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckHookDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccHookConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckHookExists(resourceName, &hook),
@@ -74,7 +74,7 @@ func TestAccHook_updateData(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckHookDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccHookConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHookExists(resourceName, &hook),
@@ -85,7 +85,7 @@ func TestAccHook_updateData(t *testing.T) {
 				),
 			},
 
-			resource.TestStep{
+			{
 				Config: testAccHookConfig_updateData,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckHookExists(resourceName, &hook),

@@ -19,7 +19,7 @@ func TestAccBuildHook(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckBuildHookDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccBuildHookConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckBuildHookExists(resourceName, &hook),
@@ -47,7 +47,7 @@ func TestAccBuildHook_disappears(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckBuildHookDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccBuildHookConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckBuildHookExists(resourceName, &hook),
@@ -68,7 +68,7 @@ func TestAccBuildHook_updateBranch(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckBuildHookDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccBuildHookConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckBuildHookExists(resourceName, &hook),
@@ -78,7 +78,7 @@ func TestAccBuildHook_updateBranch(t *testing.T) {
 				),
 			},
 
-			resource.TestStep{
+			{
 				Config: testAccBuildHookConfig_updateBranch,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckBuildHookExists(resourceName, &hook),
