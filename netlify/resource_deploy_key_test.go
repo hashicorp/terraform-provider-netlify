@@ -18,7 +18,7 @@ func TestAccDeployKey_basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDeployKeyDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccDeployKeyConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDeployKeyExists("netlify_deploy_key.test", &key),
@@ -44,7 +44,7 @@ func TestAccDeployKey_disappears(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDeployKeyDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccDeployKeyConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckDeployKeyExists("netlify_deploy_key.test", &key),

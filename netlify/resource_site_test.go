@@ -21,14 +21,14 @@ func TestAccSite_basic(t *testing.T) {
 		CheckDestroy:  testAccCheckSiteDestroy,
 		IDRefreshName: resourceName,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccSiteConfig_repo,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSiteExists(resourceName, &site),
 				),
 			},
 
-			resource.TestStep{
+			{
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -53,7 +53,7 @@ func TestAccSite_disappears(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckSiteDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccSiteConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckSiteExists("netlify_site.test", &site),
@@ -76,7 +76,7 @@ func TestAccSite_updateName(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckSiteDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccSiteConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSiteExists(resourceName, &site),
@@ -86,7 +86,7 @@ func TestAccSite_updateName(t *testing.T) {
 				),
 			},
 
-			resource.TestStep{
+			{
 				Config: fmt.Sprintf(testAccSiteConfig_updateName, siteName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSiteExists(resourceName, &site),

@@ -17,18 +17,18 @@ func resourceSite() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
 			},
 
-			"custom_domain": &schema.Schema{
+			"custom_domain": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 
-			"deploy_url": &schema.Schema{
+			"deploy_url": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -39,32 +39,32 @@ func resourceSite() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"command": &schema.Schema{
+						"command": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
 
-						"deploy_key_id": &schema.Schema{
+						"deploy_key_id": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
 
-						"dir": &schema.Schema{
+						"dir": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
 
-						"provider": &schema.Schema{
+						"provider": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
 
-						"repo_path": &schema.Schema{
+						"repo_path": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
 
-						"repo_branch": &schema.Schema{
+						"repo_branch": {
 							Type:     schema.TypeString,
 							Required: true,
 						},

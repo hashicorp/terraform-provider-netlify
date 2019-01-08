@@ -12,7 +12,7 @@ func resourceDeployKey() *schema.Resource {
 		Delete: resourceDeployKeyDelete,
 
 		Schema: map[string]*schema.Schema{
-			"public_key": &schema.Schema{
+			"public_key": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},

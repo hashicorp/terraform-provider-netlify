@@ -17,22 +17,22 @@ func resourceBuildHook() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"site_id": &schema.Schema{
+			"site_id": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			"branch": &schema.Schema{
+			"branch": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			"title": &schema.Schema{
+			"title": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
 
-			"url": &schema.Schema{
+			"url": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
