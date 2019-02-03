@@ -8,7 +8,7 @@ description: |-
 
 # netlify_site
 
-Primary settings for the Netlify site - should contain the bulk of your configuration. Allows configuration of most aspects of your Netlify site.
+Primary settings for a Netlify site - should contain the bulk of your configuration. Allows configuration of most aspects of your Netlify site.
 
 ## Example Usage
 
@@ -31,18 +31,18 @@ resource "netlify_site" "main" {
 
 The following arguments are supported:
 
-* `name` - (Required) - name of your site on netlify
-* `repo` - (Required) See [Repository](#repo)
-* `custom_domain` - (Optional) - a custom domain name, must be configured using a cname in accordance with [netlify's docs](https://www.netlify.com/docs/custom-domains)
+* `name` - (Required) - Name of your site on Netlify (e.g. **mysite**.netlify.com)
+* `repo` - (Required) - See [Repository](#repo)
+* `custom_domain` - (Optional) - Custom domain of the site, must be configured using a CNAME in accordance with [Netlify's docs](https://www.netlify.com/docs/custom-domains). (e.g. `www.example.com`)
 * `deploy_url` - (Optional)
 
 ### Repository
 
-`repo` supports the following argument
+`repo` supports the following arguments:
 
-* `command` - (Optional) - shell command run before deployment, typically used to build the site
-* `deploy_key_id` - (Optional) - a deploy key id from the `deploy_key` resource
-* `dir` - (Optional) - the directory to deploy
-* `provider` - (Required) - name of your VCS provider
+* `command` - (Optional) - Shell command to run before deployment, typically used to build the site
+* `deploy_key_id` - (Optional) - A deploy key id from the `deploy_key` resource
+* `dir` - (Optional) - Directory to deploy, typically where the build puts the processed files
+* `provider` - (Required) - Name of your VCS provider (e.g. `github`)
 * `repo_path` - (Required) - path to your repo, typically `username/reponame`
 * `repo_branch` - (Required) - branch to be deployed

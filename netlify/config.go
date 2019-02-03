@@ -23,7 +23,7 @@ type Meta struct {
 	AuthInfo runtime.ClientAuthInfoWriter
 }
 
-// Client configures and returns a fully initialized GithubClient
+// Client configures and returns a fully initialized NetlifyClient
 func (c *Config) Client() (interface{}, error) {
 	u, err := url.Parse(c.BaseURL)
 	if err != nil {
