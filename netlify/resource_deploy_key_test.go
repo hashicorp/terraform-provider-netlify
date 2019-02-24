@@ -12,6 +12,7 @@ import (
 
 func TestAccDeployKey_basic(t *testing.T) {
 	var key models.DeployKey
+	resourceName := "netlify_deploy_key.test"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -21,8 +22,14 @@ func TestAccDeployKey_basic(t *testing.T) {
 			{
 				Config: testAccDeployKeyConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDeployKeyExists("netlify_deploy_key.test", &key),
+					testAccCheckDeployKeyExists(resourceName, &key),
 				),
+			},
+
+			resource.TestStep{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})

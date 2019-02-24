@@ -10,6 +10,9 @@ func resourceDeployKey() *schema.Resource {
 		Create: resourceDeployKeyCreate,
 		Read:   resourceDeployKeyRead,
 		Delete: resourceDeployKeyDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"public_key": {
