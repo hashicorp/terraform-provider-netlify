@@ -1,6 +1,10 @@
 ## 0.1.1 (Unreleased)
 
-BUG FIXES
+IMPROVEMENTS:
+
+* resource/netlify_deploy_key: support importing [GH-3]
+
+BUG FIXES:
 
 * Docs syntax updates [GH-9]
 
