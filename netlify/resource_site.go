@@ -111,7 +111,7 @@ func resourceSiteRead(d *schema.ResourceData, metaRaw interface{}) error {
 	d.Set("deploy_url", site.DeployURL)
 	d.Set("repo", nil)
 
-	if site.BuildSettings != nil {
+	if site.BuildSettings != nil && site.BuildSettings.RepoPath != "" {
 		d.Set("repo", []interface{}{
 			map[string]interface{}{
 				"command":       site.BuildSettings.Cmd,
