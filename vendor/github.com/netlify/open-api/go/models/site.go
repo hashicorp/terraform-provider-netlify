@@ -25,6 +25,9 @@ type Site struct {
 	// admin url
 	AdminURL string `json:"admin_url,omitempty"`
 
+	// build image
+	BuildImage string `json:"build_image,omitempty"`
+
 	// build settings
 	BuildSettings *RepoInfo `json:"build_settings,omitempty"`
 
@@ -36,6 +39,9 @@ type Site struct {
 
 	// custom domain
 	CustomDomain string `json:"custom_domain,omitempty"`
+
+	// default hooks data
+	DefaultHooksData *SiteDefaultHooksData `json:"default_hooks_data,omitempty"`
 
 	// deploy hook
 	DeployHook string `json:"deploy_hook,omitempty"`
@@ -54,6 +60,9 @@ type Site struct {
 
 	// id
 	ID string `json:"id,omitempty"`
+
+	// id domain
+	IDDomain string `json:"id_domain,omitempty"`
 
 	// managed dns
 	ManagedDNS bool `json:"managed_dns,omitempty"`
@@ -106,22 +115,18 @@ func (m *Site) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateBuildSettings(formats); err != nil {
-		// prop
 		res = append(res, err)
 	}
 
-	if err := m.validateDomainAliases(formats); err != nil {
-		// prop
+	if err := m.validateDefaultHooksData(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateProcessingSettings(formats); err != nil {
-		// prop
 		res = append(res, err)
 	}
 
 	if err := m.validatePublishedDeploy(formats); err != nil {
-		// prop
 		res = append(res, err)
 	}
 
@@ -138,23 +143,30 @@ func (m *Site) validateBuildSettings(formats strfmt.Registry) error {
 	}
 
 	if m.BuildSettings != nil {
-
 		if err := m.BuildSettings.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("build_settings")
 			}
 			return err
 		}
-
 	}
 
 	return nil
 }
 
-func (m *Site) validateDomainAliases(formats strfmt.Registry) error {
+func (m *Site) validateDefaultHooksData(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.DomainAliases) { // not required
+	if swag.IsZero(m.DefaultHooksData) { // not required
 		return nil
+	}
+
+	if m.DefaultHooksData != nil {
+		if err := m.DefaultHooksData.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("default_hooks_data")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -167,14 +179,12 @@ func (m *Site) validateProcessingSettings(formats strfmt.Registry) error {
 	}
 
 	if m.ProcessingSettings != nil {
-
 		if err := m.ProcessingSettings.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("processing_settings")
 			}
 			return err
 		}
-
 	}
 
 	return nil
@@ -187,14 +197,12 @@ func (m *Site) validatePublishedDeploy(formats strfmt.Registry) error {
 	}
 
 	if m.PublishedDeploy != nil {
-
 		if err := m.PublishedDeploy.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("published_deploy")
 			}
 			return err
 		}
-
 	}
 
 	return nil

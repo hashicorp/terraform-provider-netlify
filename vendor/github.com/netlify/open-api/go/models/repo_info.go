@@ -8,7 +8,6 @@ package models
 import (
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 )
 
@@ -34,6 +33,9 @@ type RepoInfo struct {
 	// id
 	ID int64 `json:"id,omitempty"`
 
+	// installation id
+	InstallationID string `json:"installation_id,omitempty"`
+
 	// private logs
 	PrivateLogs bool `json:"private_logs,omitempty"`
 
@@ -55,25 +57,6 @@ type RepoInfo struct {
 
 // Validate validates this repo info
 func (m *RepoInfo) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateAllowedBranches(formats); err != nil {
-		// prop
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *RepoInfo) validateAllowedBranches(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.AllowedBranches) { // not required
-		return nil
-	}
-
 	return nil
 }
 
