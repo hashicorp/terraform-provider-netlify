@@ -9,7 +9,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform/helper/logging"
-	"github.com/netlify/open-api/go/plumbing"
+	"github.com/netlify/open-api/go/porcelain"
 )
 
 type Config struct {
@@ -19,7 +19,7 @@ type Config struct {
 
 // Meta is the returned meta struct.
 type Meta struct {
-	Netlify  *plumbing.Netlify
+	Netlify  *porcelain.Netlify
 	AuthInfo runtime.ClientAuthInfoWriter
 }
 
@@ -49,7 +49,7 @@ func (c *Config) Client() (interface{}, error) {
 	})
 
 	return &Meta{
-		Netlify:  plumbing.New(client, strfmt.Default),
+		Netlify:  porcelain.NewRetryable(client, strfmt.Default, porcelain.DefaultRetryAttempts),
 		AuthInfo: authInfo,
 	}, nil
 }
