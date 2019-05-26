@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform/helper/acctest"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/netlify/open-api/go/models"
@@ -12,6 +13,7 @@ import (
 
 func TestAccBuildHook(t *testing.T) {
 	var hook models.BuildHook
+	rName := acctest.RandomWithPrefix("tf-acc-test")
 	resourceName := "netlify_build_hook.test"
 
 	resource.Test(t, resource.TestCase{
@@ -20,7 +22,7 @@ func TestAccBuildHook(t *testing.T) {
 		CheckDestroy: testAccCheckBuildHookDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccBuildHookConfig,
+				Config: testAccBuildHookConfig(rName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckBuildHookExists(resourceName, &hook),
 				),
@@ -31,6 +33,7 @@ func TestAccBuildHook(t *testing.T) {
 
 func TestAccBuildHook_disappears(t *testing.T) {
 	var hook models.BuildHook
+	rName := acctest.RandomWithPrefix("tf-acc-test")
 	resourceName := "netlify_build_hook.test"
 
 	destroy := func(*terraform.State) error {
@@ -48,7 +51,7 @@ func TestAccBuildHook_disappears(t *testing.T) {
 		CheckDestroy: testAccCheckBuildHookDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccBuildHookConfig,
+				Config: testAccBuildHookConfig(rName),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckBuildHookExists(resourceName, &hook),
 					destroy,
@@ -61,6 +64,7 @@ func TestAccBuildHook_disappears(t *testing.T) {
 
 func TestAccBuildHook_updateBranch(t *testing.T) {
 	var hook models.BuildHook
+	rName := acctest.RandomWithPrefix("tf-acc-test")
 	resourceName := "netlify_build_hook.test"
 
 	resource.Test(t, resource.TestCase{
@@ -69,7 +73,7 @@ func TestAccBuildHook_updateBranch(t *testing.T) {
 		CheckDestroy: testAccCheckBuildHookDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccBuildHookConfig,
+				Config: testAccBuildHookConfig(rName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckBuildHookExists(resourceName, &hook),
 					testAccAssert("has default ur", func() bool {
@@ -79,7 +83,7 @@ func TestAccBuildHook_updateBranch(t *testing.T) {
 			},
 
 			{
-				Config: testAccBuildHookConfig_updateBranch,
+				Config: testAccBuildHookConfig_updateBranch(rName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckBuildHookExists(resourceName, &hook),
 					testAccAssert("has changed url", func() bool {
@@ -143,21 +147,26 @@ func testAccCheckBuildHookDestroy(s *terraform.State) error {
 	return nil
 }
 
-var testAccBuildHookConfig = `
+func testAccBuildHookConfig(rName string) string {
+	return fmt.Sprintf(`
 resource "netlify_site" "test" {}
 
 resource "netlify_build_hook" "test" {
 	site_id = "${netlify_site.test.id}"
 	branch = "master"
-	title = "tubes"
+	title = "%s"
 }
-`
-var testAccBuildHookConfig_updateBranch = `
+`, rName)
+}
+
+func testAccBuildHookConfig_updateBranch(rName string) string {
+	return fmt.Sprintf(`
 resource "netlify_site" "test" {}
 
 resource "netlify_build_hook" "test" {
 	site_id = "${netlify_site.test.id}"
 	branch = "changed"
-	title = "tubes"
+	title = "%s"
 }
-`
+`, rName)
+}
