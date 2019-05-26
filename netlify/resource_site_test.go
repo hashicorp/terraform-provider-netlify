@@ -13,7 +13,8 @@ import (
 
 func TestAccSite_basic(t *testing.T) {
 	var site models.Site
-	resourceName := "netlify_site.test"
+	rName := acctest.RandomWithPrefix("tf-acc-test")
+	resourceName := "netlify_site." + rName
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:      func() { testAccPreCheck(t) },
@@ -22,7 +23,7 @@ func TestAccSite_basic(t *testing.T) {
 		IDRefreshName: resourceName,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccSiteConfig_repo,
+				Config: testAccSiteConfig_repo(rName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSiteExists(resourceName, &site),
 				),
@@ -153,15 +154,17 @@ var testAccSiteConfig = `
 resource "netlify_site" "test" {}
 `
 
-var testAccSiteConfig_repo = `
-resource "netlify_site" "test" {
+func testAccSiteConfig_repo(rName string) string {
+	return fmt.Sprintf(`
+resource "netlify_site" "%s" {
 	repo {
 		provider = "github"
 		repo_path = "mitchellh/fogli"
 		repo_branch = "master"
 	}
 }
-`
+`, rName)
+}
 
 var testAccSiteConfig_updateName = `
 resource "netlify_site" "test" {

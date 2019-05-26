@@ -107,7 +107,7 @@ func testAccCheckDeployKeyDestroy(s *terraform.State) error {
 			}
 		}
 
-		return err
+		return fmt.Errorf("error")
 	}
 
 	return nil

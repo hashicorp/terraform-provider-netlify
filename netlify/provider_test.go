@@ -34,6 +34,10 @@ func testAccPreCheck(t *testing.T) {
 	if v := os.Getenv("NETLIFY_TOKEN"); v == "" {
 		t.Fatal("NETLIFY_TOKEN must be set for acceptance tests")
 	}
+	err := testAccProvider.Configure(terraform.NewResourceConfig(nil))
+	if err != nil {
+		t.Fatal("didn't work")
+	}
 }
 
 func testAccAssert(msg string, f func() bool) resource.TestCheckFunc {
