@@ -714,9 +714,13 @@ func testIDOnlyRefresh(c TestCase, opts terraform.ContextOpts, step TestStep, r 
 	addr := addrs.Resource{
 		Mode: addrs.ManagedResourceMode,
 		Type: r.Type,
-		Name: "foo",
+		// Name: "foo",
+		Name: c.IDRefreshName,
 	}.Instance(addrs.NoKey)
 	absAddr := addr.Absolute(addrs.RootModuleInstance)
+	log.Printf("[KATY] testcase: %+v", c)
+	log.Printf("[KATY] opts: %+v, step: %+v, resourcestate: %+v", opts, step, r)
+	log.Printf("[KATY] addr: %s, absAddr: %s", addr, absAddr)
 
 	// Build the state. The state is just the resource with an ID. There
 	// are no attributes. We only set what is needed to perform a refresh.
