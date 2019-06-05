@@ -8,7 +8,7 @@ description: |-
 
 # netlify_hook
 
-An [outgoing webhook](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications), typically used to netlify a third party service about deploys.
+An [outgoing webhook](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications), typically used to notify a third party service about deploys.
 
 ## Example Usage
 
