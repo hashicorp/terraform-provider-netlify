@@ -1,4 +1,4 @@
-## 0.3.0 (Unreleased)
+## 0.3.0 (June 07, 2019)
 
 * provider: This release includes only a Terraform SDK upgrade with compatibility for Terraform v0.12. The provider remains backwards compatible with Terraform v0.11 and this update should have no significant changes in behavior for the provider. Please report any unexpected behavior in new GitHub issues (Terraform core: https://github.com/hashicorp/terraform/issues or Terraform Netlify Provider: https://github.com/terraform-providers/terraform-provider-netlify/issues).
 
