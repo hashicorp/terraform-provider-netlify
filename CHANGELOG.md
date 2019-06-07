@@ -10,7 +10,8 @@
 * upgrade to Go 1.11 [GH-12]
 * use Go modules with `go mod vendor` [GH-16]
 * fix indentation issues in Makefile [GH-23]
-* upgrade `netlify/open-api` dependency [GH-20]
+* upgrade `netlify/open-api` dependency to v0.11.4 [GH-20]
+* upgrade `sirupsen/logrus` dependency to v1.4.2 [GH-27]
 
 ### Bug fixes
 
