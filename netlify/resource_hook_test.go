@@ -15,10 +15,9 @@ func TestAccHook(t *testing.T) {
 	resourceName := "netlify_hook.test"
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:      func() { testAccPreCheck(t) },
-		Providers:     testAccProviders,
-		CheckDestroy:  testAccCheckHookDestroy,
-		IDRefreshName: resourceName,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckHookDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccHookConfig,

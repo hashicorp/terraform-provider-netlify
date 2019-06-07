@@ -16,10 +16,9 @@ func TestAccSite_basic(t *testing.T) {
 	resourceName := "netlify_site.test"
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:      func() { testAccPreCheck(t) },
-		Providers:     testAccProviders,
-		CheckDestroy:  testAccCheckSiteDestroy,
-		IDRefreshName: resourceName,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSiteDestroy,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccSiteConfig_repo,
