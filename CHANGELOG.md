@@ -1,22 +1,22 @@
-## 0.2.0 (Unreleased)
+## 0.2.0 (June 07, 2019)
 
 ### Features
 
-* `resource/netlify_deploy_key`: support importing [GH-3]
-* automatically retry requests [GH-2]
+* `resource/netlify_deploy_key`: support importing ([#3](https://github.com/terraform-providers/terraform-provider-aws/issues/3))
+* automatically retry requests ([#2](https://github.com/terraform-providers/terraform-provider-aws/issues/2))
 
 ### Improvements
 
-* upgrade to Go 1.11 [GH-12]
-* use Go modules with `go mod vendor` [GH-16]
-* fix indentation issues in Makefile [GH-23]
-* upgrade `netlify/open-api` dependency to v0.11.4 [GH-20]
-* upgrade `sirupsen/logrus` dependency to v1.4.2 [GH-27]
+* upgrade to Go 1.11 ([#12](https://github.com/terraform-providers/terraform-provider-aws/issues/12))
+* use Go modules with `go mod vendor` ([#16](https://github.com/terraform-providers/terraform-provider-aws/issues/16))
+* fix indentation issues in Makefile ([#23](https://github.com/terraform-providers/terraform-provider-aws/issues/23))
+* upgrade `netlify/open-api` dependency to v0.11.4 ([#20](https://github.com/terraform-providers/terraform-provider-aws/issues/20))
+* upgrade `sirupsen/logrus` dependency to v1.4.2 ([#27](https://github.com/terraform-providers/terraform-provider-aws/issues/27))
 
 ### Bug fixes
 
-* docs fixes [GH-9] [GH-10] [GH-11] [GH-19]
-* only set repo attribute on read if there is a repo path [GH-22]
+* docs fixes ([#9](https://github.com/terraform-providers/terraform-provider-aws/issues/9)] [[#10](https://github.com/terraform-providers/terraform-provider-aws/issues/10)] [[#11](https://github.com/terraform-providers/terraform-provider-aws/issues/11)] [[#19](https://github.com/terraform-providers/terraform-provider-aws/issues/19))
+* only set repo attribute on read if there is a repo path ([#22](https://github.com/terraform-providers/terraform-provider-aws/issues/22))
 
 ## 0.1.0 (September 13, 2018)
 
