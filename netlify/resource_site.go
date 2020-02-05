@@ -33,6 +33,17 @@ func resourceSite() *schema.Resource {
 				Computed: true,
 			},
 
+			"account_slug": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
+
+			"account_name": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+
 			"repo": {
 				Type:     schema.TypeList,
 				MaxItems: 1,
@@ -78,15 +89,33 @@ func resourceSite() *schema.Resource {
 func resourceSiteCreate(d *schema.ResourceData, metaRaw interface{}) error {
 	meta := metaRaw.(*Meta)
 
-	params := operations.NewCreateSiteParams()
-	params.Site = resourceSite_setupStruct(d)
+	// If we have an "account_slug" set we use a different API path that lets
+	// us create a site in a specific team. Unfortunately we have to duplicate
+	// a lot of stuff because the types are totally different even though
+	// structurally they are identical.
+	var site *models.Site
+	if v, ok := d.GetOk("account_slug"); ok {
+		params := operations.NewCreateSiteInTeamParams()
+		params.AccountSlug = v.(string)
+		params.Site = resourceSite_setupStruct(d)
+		resp, err := meta.Netlify.Operations.CreateSiteInTeam(params, meta.AuthInfo)
+		if err != nil {
+			return err
+		}
 
-	resp, err := meta.Netlify.Operations.CreateSite(params, meta.AuthInfo)
-	if err != nil {
-		return err
+		site = resp.Payload
+	} else {
+		params := operations.NewCreateSiteParams()
+		params.Site = resourceSite_setupStruct(d)
+		resp, err := meta.Netlify.Operations.CreateSite(params, meta.AuthInfo)
+		if err != nil {
+			return err
+		}
+
+		site = resp.Payload
 	}
 
-	d.SetId(resp.Payload.ID)
+	d.SetId(site.ID)
 	return resourceSiteRead(d, metaRaw)
 }
 
@@ -109,6 +138,8 @@ func resourceSiteRead(d *schema.ResourceData, metaRaw interface{}) error {
 	d.Set("name", site.Name)
 	d.Set("custom_domain", site.CustomDomain)
 	d.Set("deploy_url", site.DeployURL)
+	d.Set("account_slug", site.AccountSlug)
+	d.Set("account_name", site.AccountName)
 	d.Set("repo", nil)
 
 	if site.BuildSettings != nil && site.BuildSettings.RepoPath != "" {
