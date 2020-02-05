@@ -1,3 +1,4 @@
+## 0.5.0 (Unreleased)
 ## 0.4.0 (February 05, 2020)
 * Add support for `account_slug` to site resource ([#17](https://github.com/terraform-providers/terraform-provider-aws/issues/17))
 
